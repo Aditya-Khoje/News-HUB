@@ -94,7 +94,7 @@ export class News extends Component {
     this.setState({ loading: true });
     let data = await fetch(url);
     let parsedData = await data.json();
-    console.log(parsedData);
+    // console.log(parsedData);
     this.setState({
       articles: parsedData.articles,
       totalResults: parsedData.totalResults,
@@ -119,7 +119,7 @@ export class News extends Component {
       this.setState({ loading: true });
       let data = await fetch(url);
       let parsedData = await data.json();
-      console.log(parsedData);
+      // console.log(parsedData);
 
       this.setState({
         articles: parsedData.articles,
@@ -128,7 +128,7 @@ export class News extends Component {
         loading: false,
       });
 
-      console.log("Next");
+      // console.log("Next");
     }
   };
 
@@ -143,14 +143,14 @@ export class News extends Component {
     this.setState({ loading: true });
     let data = await fetch(url);
     let parsedData = await data.json();
-    console.log(parsedData);
+    // console.log(parsedData);
     this.setState({
       page: this.state.page - 1,
       loading: false,
       articles: parsedData.articles,
     });
 
-    console.log("Previous");
+    // console.log("Previous");
   };
   render() {
     return (
