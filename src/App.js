@@ -17,7 +17,7 @@ export class App extends Component {
               element={
                 <News
                   key="general"
-                  pageSize={12}
+                  pageSize={15}
                   country="in"
                   category="general"
                 />
