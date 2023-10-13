@@ -3,6 +3,7 @@ import NewsItem from "./NewsItem";
 import { logDOM } from "@testing-library/react";
 import Spinner from "./Spinner";
 import PropTypes from "prop-types";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export class News extends Component {
   // articles = [
@@ -84,8 +85,9 @@ export class News extends Component {
     // console.log("Hi i am constructor form news component");
     this.state = {
       articles: [],
-      loading: false,
+      loading: true,
       page: 1,
+      totalResults: 0,
     };
     document.title = `${this.props.category.toUpperCase()} - News`;
   }
@@ -115,17 +117,33 @@ export class News extends Component {
     this.setState({ page: this.state.page - 1 });
     this.updateNews();
   };
+
+  fetchMoreData = async () => {
+    this.setState({ page: this.state.page + 1 });
+    const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=e7b84532fa9d4321b9b40625a727ea59&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+    let data = await fetch(url);
+    let parsedData = await data.json();
+    this.setState({
+      articles: this.state.articles.concat(parsedData.articles),
+      totalResults: parsedData.totalResults,
+    });
+  };
   render() {
     return (
       <>
-        <div className="container my-3">
-          <h1 className="text-center">
-            Top Headlines from {this.props.category.toUpperCase()}
-          </h1>
-          {this.state.loading && <Spinner />}
-          <div className="row">
-            {!this.state.loading &&
-              this.state.articles.map((element) => {
+        <h1 className="text-center">
+          Top Headlines from {this.props.category.toUpperCase()}
+        </h1>
+        {this.state.loading && <Spinner />}
+        <InfiniteScroll
+          dataLength={this.state.articles.length}
+          next={this.fetchMoreData}
+          hasMore={this.state.articles.length !== this.state.totalResults}
+          loader={<Spinner />}
+        >
+          <div className="container">
+            <div className="row">
+              {this.state.articles.map((element) => {
                 return (
                   <div className="col-md-4 my-3" key={element.url}>
                     <NewsItem
@@ -142,8 +160,10 @@ export class News extends Component {
                   </div>
                 );
               })}
+            </div>
           </div>
-          <div className="container d-flex justify-content-between">
+        </InfiniteScroll>
+        {/* <div className="container d-flex justify-content-between">
             <button
               disabled={this.state.page <= 1}
               rel="noreference"
@@ -165,8 +185,7 @@ export class News extends Component {
             >
               Next &rarr;
             </button>
-          </div>
-        </div>
+          </div> */}
       </>
     );
   }
